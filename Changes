@@ -6,3 +6,6 @@ Revision history for Perl extension Lingua::ZH::PinyinConvert.
 
 0.02  Sat Nov 23 19:29:50 2002
         - test.pl bug fixed
+
+0.03  Sat Nov 24 03:11:00 2002
+        - code redundancy removed (Dave Rolsky <autarch@urth.org>) 

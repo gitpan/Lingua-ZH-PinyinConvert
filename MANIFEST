@@ -2,5 +2,4 @@ Changes
 Makefile.PL
 MANIFEST
 PinyinConvert.pm
-PinyinConvert.xs
 README
