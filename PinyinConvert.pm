@@ -12,7 +12,7 @@ use vars qw(@ISA @EXPORT_OK $VERSION);
 
 @EXPORT_OK = qw/convert/;
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 my @PS = ( # pinyin systems
        [ qw/a a a a a/],

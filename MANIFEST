@@ -3,3 +3,4 @@ Makefile.PL
 MANIFEST
 PinyinConvert.pm
 README
+test.pl
