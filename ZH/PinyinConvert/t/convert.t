@@ -6,7 +6,7 @@
 # change 'tests => 1' to 'tests => last_test_to_print';
 
 use Test;
-BEGIN { plan tests => 1 };
+BEGIN { plan tests => 3 };
 use Lingua::ZH::PinyinConvert qw/convert/;
 ok(1); # If we made it this far, we're ok.
 
@@ -14,7 +14,6 @@ ok(1); # If we made it this far, we're ok.
 
 # Insert your test code below, the Test module is use()ed here so read
 # its man page ( perldoc Test ) for help writing this test script.
-#BEGIN { plan tests => 2 }
 
 ok( convert ('t', 'h', <<DAODEJING)
 dao ke dao fei chang dao
