@@ -12,3 +12,6 @@ Revision history for Perl extension Lingua::ZH::PinyinConvert.
 
 0.04  Tue Nov 26 11:21:13 2002
 	- MANIFEST fixed :-/
+
+0.05  Sun,  9 Feb 2003 03:05:06 +0800
+	- PerlIO::via::PinyinConvert added

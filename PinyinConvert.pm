@@ -1,18 +1,12 @@
 package Lingua::ZH::PinyinConvert;
 
-use 5.005;
+use 5.006;
 use strict;
 use Carp;
-
 require Exporter;
-
-use vars qw(@ISA @EXPORT_OK $VERSION);
-
-@ISA = qw(Exporter);
-
-@EXPORT_OK = qw/convert/;
-
-$VERSION = '0.04';
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw/convert/;
+our $VERSION = '0.05';
 
 my @PS = ( # pinyin systems
        [ qw/a a a a a/],
@@ -198,12 +192,12 @@ my @PS = ( # pinyin systems
     [ qw/lung lung long lung long/],
     [ qw/lou lou lou lou lou/],
     [ qw/lu lu lu lu lu/],
-    [ qw/lu: liu lU lyu lyu/],
+    [ qw/lu: liu lu lyu lyu/],
     [ qw/luan luan luan lwan luan/],
-    [ qw/luan: liuan lUan lywan lyuan/],
+    [ qw/luan: liuan luan lywan lyuan/],
     [ qw/lueh: lieu lue lywe lyue/],
     [ qw/lun luen lun lwun lun/],
-    [ qw/lun: liun lUn lyun lyuen/],
+    [ qw/lun: liun lun lyun lyuen/],
     [ qw/luo luo luo lwo luo/],
     [ qw/ma ma ma ma ma/],
     [ qw/mai mai mai mai mai/],
@@ -245,7 +239,7 @@ my @PS = ( # pinyin systems
     [ qw/nung nung nong nung nong/],
     [ qw/nou nou nou nou nou/],
     [ qw/nu nu nu nu nu/],
-    [ qw/nu: niu nU nyu nyu/],
+    [ qw/nu: niu nu nyu nyu/],
     [ qw/nuan nuan nuan nwan nuan/],
     [ qw/nueh: niue nue nywe nyue/],
     [ qw/nuen nun nun nwen nun/],
@@ -439,7 +433,13 @@ for my $p (@PS){
 $i++;
 }
 
-my %enum = qw/w 0 m 1 h 2 y 3 t 4/;
+my %enum = (
+    'wade-giles' => 0,
+    'mps-2' => 1,
+    'hanyu' => 2,
+    'yale' => 3,
+    'tongyong' => 4
+    );
 
 # table lookup
 sub transfer($$$){
@@ -453,18 +453,19 @@ sub transfer($$$){
 sub convert($$$) {
     my ($from, $to, $text) = @_;
     $from = ( exists $enum{lc $from} ? $enum{lc $from} : croak "No such a system");
-    $to   = ( exists $enum{lc $to} ? $enum{lc $to} : croak "No such a system");
+    $to   = ( exists $enum{lc $to}   ? $enum{lc $to} : croak "No such a system");
 
-    my ($offset, $sslen, $ss, $matched, $rets, $targets);
-
+    my ($offset, $sslen, $ss, $matched, $rets, $targets, $SS);
     for($offset = 0; $offset < length $text; ){
 	$matched = 0;
 	for($sslen = 7; $sslen>0; $sslen--){
-	    my $ss = lc substr($text, $offset, $sslen);
-	    last unless $ss;
+	    my $SS = substr($text, $offset, $sslen);
+	    last unless $SS =~ m([':A-Za-z])o;
+	    my $ss = lc $SS;
 	    if( exists $idx{$ss} ){
 		$targets = transfer($ss, $from, $to);
 		if($targets){
+                    $targets = ucfirst $targets if $SS =~ /^[A-Z]/o;
 		    $offset += length $ss;
 		    $matched = 1;
 		    last;
@@ -482,13 +483,6 @@ sub convert($$$) {
     $rets;
 }
 
-__END__
-
-
-
-
-
-
 1;
 __END__
 
@@ -504,33 +498,35 @@ Lingua::ZH::PinyinConvert - Translation among various Chinese Pinyin Systems
 
 =head1 DESCRIPTION
 
-  Lingua::ZH::PinyinConvert translates Chinese Pinyin texts written
-  in various Pinyin systems. Supported Pinyin systems are Wade-Giles,
-  MPS-2, Hanyu, Yale, and Tongyong. See http://www.romanization.com/
-  for more information of these systems.
+Lingua::ZH::PinyinConvert translates Chinese Pinyin texts written in various Pinyin systems. Supported Pinyin systems are B<Wade-Giles>, B<MPS-2>, B<Hanyu>, B<Yale>, and B<Tongyong>.
+
+See http://www.romanization.com/ for more information of these systems.
 
 =head1 EXPORT_OK
 
 =over 1
 
-=item o
-  convert($SOURCE_SYSTEM, $TARGET_SYSTEM, $TEXT_HERE);
+=item * convert($SOURCE_SYSTEM, $TARGET_SYSTEM, $TEXT);
 
-  Systems are represented by their initial letters.
-  convert('h', 't', 'text here'); # converts text from Hanyu to Tongyong
+  # converts text from Hanyu to Tongyong
+  convert('hanyu', 'tongyong', 'wo hao ben');
 
 =back
 
-=head1 AUTHOR
-
-  xern <xern@cpan.org>
-
-=head1 LICENSE
-
-  Lingua::ZH::PinyinConvert is released under The Artistic License.
-
 =head1 SEE ALSO
 
-  http://www.romanization.com/, Lingua::ZH::CCDICT, Lingua::ZH::CEDICT
+http://www.romanization.com/
+
+L<PerlIO::via::PinyinConvert>
+
+L<Lingua::ZH::CCDICT>
+
+L<Lingua::ZH::CEDICT>
+
+=head1 COPYRIGHT
+
+xern <xern@cpan.org>
+
+This module is free software; you can redistribute it or modify it under the same terms as Perl itself.
 
 =cut
